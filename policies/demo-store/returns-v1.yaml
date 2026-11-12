@@ -1,0 +1,22 @@
+policy_id: demo-returns
+version: 1
+timezone: UTC
+returns:
+  window_days: 30
+  window_start: delivered_at
+  require_return_received_before_refund: false
+exclusions:
+  final_sale: true
+  gift_cards: true
+  digital_goods: true
+refunds:
+  allow_partial: true
+  allow_full: true
+  refund_shipping: false
+  require_human_approval: true
+  max_per_action_minor: 2500
+exceptions:
+  damaged_items: manual_review
+  missing_delivery_date: manual_review
+  identity_mismatch: block
+  previous_refund_detected: manual_review
