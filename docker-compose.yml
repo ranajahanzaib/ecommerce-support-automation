@@ -1,0 +1,35 @@
+services:
+  simulator:
+    build:
+      context: .
+      dockerfile: apps/commerce-simulator/Dockerfile
+    ports: ["127.0.0.1:8001:8001"]
+    environment:
+      SIMULATOR_DB: /sim-data/commerce-simulator.db
+      SIMULATOR_FAULTS_ENABLED: "true"
+    volumes: ["commerce-simulator-data:/sim-data"]
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    ports: ["127.0.0.1:8000:8000"]
+    environment:
+      COMMERCEACTION_DB: /data/commerceaction.db
+      COMMERCE_SIMULATOR_URL: http://simulator:8001
+      CORS_ORIGINS: http://localhost:5173
+      AI_PROVIDER: ${AI_PROVIDER:-fixture}
+      AI_BASE_URL: ${AI_BASE_URL:-}
+      AI_MODEL: ${AI_MODEL:-}
+      AI_API_KEY: ${AI_API_KEY:-}
+    volumes: ["commerceaction-data:/data"]
+    depends_on: [simulator]
+  web:
+    build: ./apps/web
+    ports: ["127.0.0.1:5173:5173"]
+    environment:
+      VITE_API_URL: /api
+      VITE_API_PROXY_TARGET: http://api:8000
+    depends_on: [api]
+volumes:
+  commerceaction-data:
+  commerce-simulator-data:
