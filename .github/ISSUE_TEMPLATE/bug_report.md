@@ -1,26 +1,31 @@
 ---
 name: Bug report
-about: Create a report to help us improve
-title: ''
+about: Report unexpected behavior
+title: ""
 labels: bug
-assignees: ''
+assignees: ""
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+## Bug description
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. See error
+Describe the unexpected behavior and its impact.
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+## Reproduction steps
 
-**Environment**
-- OS: [e.g. macOS 26.4.1, Windows 11, Ubuntu 24.04.4]
-- Version: [e.g. 1.0.0]
+1. Describe the setup.
+2. List the actions taken.
+3. Include the observed result.
 
-**Additional context**
-Add any other context or screenshots here.
+## Expected behavior
+
+Describe the result you expected.
+
+## Environment
+
+- Operating system:
+- CommerceAction version or commit:
+- Python and Node.js versions:
+
+## Additional context
+
+Add logs or screenshots after removing credentials and personal information.

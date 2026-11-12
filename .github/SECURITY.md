@@ -4,6 +4,6 @@
 
 Please do not report security vulnerabilities through public GitHub issues.
 
-Instead, report them via GitHub's private [Security Advisories](../../security/advisories/new) feature. Include as much detail as possible: a description of the issue, steps to reproduce, and potential impact.
+Report vulnerabilities through [GitHub's private Security Advisories](https://github.com/ranajahanzaib/commerce-action/security/advisories/new). Include a description, reproduction steps, affected versions, and potential impact. Do not include real customer data, payment data, or credentials in a report.
 
-You can expect an acknowledgment within 48 hours and a resolution timeline once the issue is confirmed.
+The project will acknowledge reports and share a response timeline after initial review. If private reporting is unavailable, do not post exploit details publicly; contact the repository owner through GitHub.

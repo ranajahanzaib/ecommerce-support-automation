@@ -1,46 +1,26 @@
-## Contributing
+# Contributing
 
-We welcome contributions of all kinds to improve this project! Here's how you can get involved:
+Thanks for contributing. Keep policy decisions deterministic and make evidence and authorization checks explicit. Avoid putting business rules in prompts or exposing credentials to the browser.
 
-1. **Fork the Repository**: Start by forking the repository to your GitHub account.
+## Local setup
 
-2. **Clone Your Fork**: Clone the forked repository to your local machine:
+- Python 3.12 or newer
+- Node.js 22 or newer
+- pnpm 12.3.4
+- Make
 
-   ```bash
-   git clone <repo_url>
-   cd repo_dir
-   ```
+Run `make install`, then `make test`. Start all local services with `make dev`, or start the API, simulator, and frontend separately with `make api`, `make simulator`, and `make web`.
 
-3. **Create a Branch**: Create a new branch for your feature or bug fix:
+Docker Compose reads configuration from a root `.env` file. Copy `.env.example` to `.env` before using optional provider settings with Compose. For Makefile-based development, export the required variables in the shell that starts the service. Keep real credentials out of source control and configure provider keys only for the API process.
 
-   ```bash
-   git checkout -b feature-name
-   ```
+## Changes
 
-4. **Make Changes**: Make your changes to the codebase. Be sure to follow existing code style and conventions.
+- Add focused tests for policy, money, role, idempotency, and failure behavior.
+- Use integer minor units for monetary values.
+- Keep demo data fictional and preserve the distinction between accepted and settled refunds.
+- Update docs when changing simulator semantics or security boundaries.
+- Do not commit environment files other than `.env.example`, credentials, customer data, or real payment information.
 
-5. **Commit Changes**: Commit your changes with a clear and descriptive message:
+## Pull requests
 
-   ```bash
-   git commit -m "Add detailed description of the changes"
-   ```
-
-6. **Push Changes**: Push your changes to your fork:
-
-   ```bash
-   git push origin feature-name
-   ```
-
-7. **Submit a Pull Request**: Open a pull request from your branch to the main repository's branch. Include a detailed description of your changes and the problem they solve.
-
-8. **Review and Feedback**: Participate in the review process. Make any requested changes, and your contribution will be merged!
-
-### Guidelines
-
-- Ensure your code follows the existing style and conventions.
-- Include tests for any new functionality or bug fixes.
-- Write clear, concise commit messages and pull request descriptions.
-
-### Issues
-
-Feel free to report bugs or suggest enhancements by creating an issue. Be sure to include detailed information about the problem and, if possible, steps to reproduce it.
+Describe the behavior changed, validation run, and any unsupported or unverified scenarios. Tests requiring paid services are not acceptable for the core CI path.
