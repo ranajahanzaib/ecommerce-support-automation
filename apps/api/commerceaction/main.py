@@ -280,12 +280,35 @@ def analyze(ticket_id: str, user: dict[str, str] = Depends(actor)) -> dict[str, 
             outcome = policy_result.outcome
             amount = min(policy_result.eligible_amount_minor, POLICY.refunds.max_per_action_minor) if outcome == "ELIGIBLE" else 0
             age = (datetime.now(UTC).date() - delivered).days
-            explanation = (
-                f"Order #{order_match['number']} was delivered {age} days ago. "
-                f"Demo policy allows eligible returns within {POLICY.returns.window_days} days; the verified customer "
-                f"matches the order and remaining refundable balance is {remaining} minor units "
-                f"of {commerce_order['currency']}. Human approval is required."
-            )
+            applied = ", ".join(policy_result.applied_rules)
+            if outcome == "ELIGIBLE":
+                explanation = (
+                    f"Order #{order_match['number']} was delivered {age} days ago. "
+                    f"Demo policy allows eligible returns within {POLICY.returns.window_days} days; the verified customer "
+                    f"matches the order and remaining refundable balance is {remaining} minor units "
+                    f"of {commerce_order['currency']}. Human approval is required."
+                )
+            elif "FINAL_SALE_EXCLUSION" in policy_result.applied_rules:
+                explanation = (
+                    f"Order #{order_match['number']} contains a final-sale item excluded under demo policy v{POLICY.version} "
+                    f"({applied}). No automatic refund is proposed."
+                )
+            elif "RETURN_WINDOW_EXPIRED" in policy_result.applied_rules:
+                explanation = (
+                    f"Order #{order_match['number']} was delivered {age} days ago, outside the {POLICY.returns.window_days}-day "
+                    f"return window under demo policy v{POLICY.version} ({applied}; remaining balance: {remaining} minor units "
+                    f"of {commerce_order['currency']}). No automatic refund is proposed."
+                )
+            elif "NO_REFUNDABLE_BALANCE" in policy_result.applied_rules:
+                explanation = (
+                    f"Order #{order_match['number']} has no remaining refundable balance ({remaining} minor units of "
+                    f"{commerce_order['currency']}; {applied}). No automatic refund is proposed."
+                )
+            else:
+                explanation = (
+                    f"Order #{order_match['number']} was evaluated under demo policy v{POLICY.version} with outcome {outcome} "
+                    f"({applied}). No automatic financial action is proposed."
+                )
             evidence = [
                 {"type": "CUSTOMER_VERIFICATION", "value": "verified customer owns order"},
                 {"type": "ORDER_DELIVERY_DATE", "value": commerce_order["delivered_at"]},

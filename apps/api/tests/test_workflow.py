@@ -74,6 +74,7 @@ def test_outside_window_is_ineligible(tmp_path, monkeypatch):
     result = client.post("/api/tickets/tic_2044/analyze", headers=agent).json()
     assert result["outcome"] == "INELIGIBLE"
     assert result["proposal"] is None
+    assert "RETURN_WINDOW_EXPIRED" in result["explanation"]
 
 
 def test_policy_requires_evidence_and_blocks_identity_mismatch():
@@ -106,6 +107,7 @@ def test_final_sale_and_damaged_item_escalate_safely(tmp_path, monkeypatch):
     damaged = client.post("/api/tickets/tic_5001/analyze", headers=agent).json()
     assert final_sale["outcome"] == "INELIGIBLE"
     assert final_sale["proposal"] is None
+    assert "FINAL_SALE_EXCLUSION" in final_sale["explanation"]
     assert damaged["intent"] == "DAMAGED_ITEM"
     assert damaged["outcome"] == "REQUIRES_MANUAL_REVIEW"
     assert damaged["proposal"] is None
