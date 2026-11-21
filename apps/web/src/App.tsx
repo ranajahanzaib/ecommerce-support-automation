@@ -93,8 +93,16 @@ export default function App() {
         ...init.headers,
       },
     });
-    const d = await r.json();
-    if (!r.ok) throw Error(d.detail || "Request failed");
+    const text = await r.text();
+    let d: any = {};
+    if (text) {
+      try {
+        d = JSON.parse(text);
+      } catch {
+        d = { detail: text };
+      }
+    }
+    if (!r.ok) throw Error(d.detail || `Request failed (${r.status})`);
     return d;
   }
   async function signIn() {
@@ -140,8 +148,9 @@ export default function App() {
       setScenarios(sc);
       setAiMode(h.mode);
       if (!selected && t.length) setSelected(t[0]);
-      if (o.length && !orderDetail) {
-        setOrderDetail(await req(`/orders/${o[0].id}`));
+      if (o.length) {
+        const targetOrderId = orderDetail?.id || o[0].id;
+        setOrderDetail(await req(`/orders/${targetOrderId}`));
       }
     } catch (e: any) {
       setNotice(e.message);
@@ -393,9 +402,15 @@ export default function App() {
               ? "Ticket inbox"
               : tab === "approvals"
                 ? "Approval queue"
-                : tab === "audit"
-                  ? "Audit trail"
-                  : "Overview"}
+                : tab === "orders"
+                  ? "Orders"
+                  : tab === "policy"
+                    ? "Policy explorer"
+                    : tab === "evaluations"
+                      ? "Evaluation lab"
+                      : tab === "audit"
+                        ? "Audit trail"
+                        : "Overview"}
           </div>
           <div className="header-right">
             <div className="live">
@@ -475,7 +490,8 @@ export default function App() {
               <div>
                 <span>POLICY VERSION</span>
                 <b>
-                  01 <small className="live-label">ACTIVE</small>
+                  {String(policy?.version || 1).padStart(2, "0")}{" "}
+                  <small className="live-label">ACTIVE</small>
                 </b>
                 <small>Returns · last updated today</small>
               </div>
@@ -577,7 +593,13 @@ export default function App() {
                     </div>
                     <div className="message">
                       <div className="avatar customer">
-                        {current.customer_id ? "MC" : "?"}
+                        {current.customer_id === "cus_100"
+                          ? "MC"
+                          : current.customer_id === "cus_200"
+                            ? "OA"
+                            : current.customer_id === "cus_300"
+                              ? "AR"
+                              : "?"}
                       </div>
                       <div>
                         <div className="sender">
@@ -1270,7 +1292,7 @@ export default function App() {
                   <FlaskConical size={28} />
                   <b>No run yet</b>
                   <p>
-                    Run the deterministic six-case suite to inspect current
+                    Run the deterministic eight-case suite to inspect current
                     results.
                   </p>
                 </div>
